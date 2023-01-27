@@ -17,12 +17,9 @@ namespace Lerp
             Vector3 nor = new Vector3(x, y, 0f).normalized;
             transform.Translate(nor * moveSpeed * Time.deltaTime);
 
-            if (nor != Vector3.zero)
-            {
-                float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
-                Quaternion lookRot = Quaternion.Euler(0, 0, z + 90f);
-                model.rotation = Quaternion.Lerp(model.rotation, lookRot, Time.deltaTime * moveSpeed);
-            }
+            float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
+            Quaternion lookRot = Quaternion.Euler(0, 0, z + 90f);
+            model.rotation = Quaternion.Lerp(model.rotation, lookRot, Time.deltaTime * moveSpeed);
         }
 
     }
