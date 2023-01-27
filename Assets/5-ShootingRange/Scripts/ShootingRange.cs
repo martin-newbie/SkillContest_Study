@@ -82,7 +82,7 @@ namespace ShootingRange
                     SectorFormTargetShot(5, 45);
                     break;
                 case 7:
-                    SectorFormDelayShot(5, 45, 30, 5, 20);
+                    SectorFormDelayShot(5, 45, 30, 5, 10);
                     break;
                 case 8:
                     MovingCircleShot(10);
