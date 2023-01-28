@@ -146,7 +146,7 @@ namespace ShootingRange
             {
                 Vector3 pos = startPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
 
-                Vector2 nor = ((curTarget.position - pos) - startPos).normalized;
+                Vector2 nor = (curTarget.position - pos).normalized;
                 float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
                 Quaternion rot = Quaternion.Euler(0, 0, z);
 
@@ -169,7 +169,7 @@ namespace ShootingRange
                 {
                     Vector3 pos = startPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
 
-                    Vector2 nor = ((curTarget.position - pos) - startPos).normalized;
+                    Vector2 nor = (curTarget.position - pos).normalized;
                     float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
                     Quaternion rot = Quaternion.Euler(0, 0, z);
 
