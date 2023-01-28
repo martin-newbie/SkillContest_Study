@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UIMove
 {
-    public class MinMaxMove : MonoBehaviour
+    public class OffsetMove : MonoBehaviour
     {
         public RectTransform window;
 
