@@ -8,9 +8,13 @@ namespace ShootingRange
     public class ShootingRange : MonoBehaviour
     {
         public GameObject bullet;
+        public GameObject rotateBullet;
 
         [Header("Objects")]
+        public Transform startPosTR;
         public Transform[] targets;
+
+        Vector3 startPos => startPosTR.position;
 
         [Header("UI")]
         public Transform shoot_parent;
@@ -26,7 +30,7 @@ namespace ShootingRange
         {
             curTarget = targets[0];
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 12; i++)
             {
                 Button temp = Instantiate(shoot_buttonPrefab, shoot_parent);
 
@@ -53,7 +57,6 @@ namespace ShootingRange
             curTarget = targets[index];
         }
 
-
         void Shoot(int index)
         {
             if (!isDone) return;
@@ -67,7 +70,7 @@ namespace ShootingRange
                     CircleDelayShot(10);
                     break;
                 case 2:
-                    TargetingShot();
+                    TargetingSingleShot();
                     break;
                 case 3:
                     RoundTargetShot(10);
@@ -87,10 +90,20 @@ namespace ShootingRange
                 case 8:
                     MovingCircleShot(10);
                     break;
+                case 9:
+                    MovingRotatingCircleShot(10, 4f, 100f);
+                    break;
+                case 10:
+                    GatheringCircleShot(10);
+                    break;
+                case 11:
+                    LinearTargetDelayShot(10);
+                    break;
                 default:
                     break;
             }
         }
+
 
         void CircleShot(int count)
         {
@@ -119,7 +132,7 @@ namespace ShootingRange
             }
         }
 
-        void TargetingShot()
+        void TargetingSingleShot()
         {
             float z = Mathf.Atan2(curTarget.position.y, curTarget.position.x) * Mathf.Rad2Deg;
             Quaternion rot = Quaternion.Euler(0, 0, z);
@@ -127,13 +140,13 @@ namespace ShootingRange
         }
 
         void RoundTargetShot(int count)
-        { // Vector3.zero는 시작지점으로 치환
+        { // startPos는 시작지점으로 치환
             float radius = 1f;
             for (int i = 0; i < 360; i += 360 / count)
             {
-                Vector3 pos = Vector3.zero + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
+                Vector3 pos = startPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
 
-                Vector2 nor = ((curTarget.position - pos) - Vector3.zero).normalized;
+                Vector2 nor = ((curTarget.position - pos) - startPos).normalized;
                 float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
                 Quaternion rot = Quaternion.Euler(0, 0, z);
 
@@ -154,9 +167,9 @@ namespace ShootingRange
                 float radius = 1f;
                 for (int i = 0; i < 360; i += 360 / count)
                 {
-                    Vector3 pos = Vector3.zero + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
+                    Vector3 pos = startPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
 
-                    Vector2 nor = ((curTarget.position - pos) - Vector3.zero).normalized;
+                    Vector2 nor = ((curTarget.position - pos) - startPos).normalized;
                     float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
                     Quaternion rot = Quaternion.Euler(0, 0, z);
 
@@ -188,7 +201,7 @@ namespace ShootingRange
             for (; i <= max; i++)
             {
                 Quaternion rot = Quaternion.Euler(0, 0, z);
-                Instantiate(bullet, Vector3.zero, rot);
+                Instantiate(bullet, startPos, rot);
                 z += amount;
             }
         }
@@ -198,7 +211,7 @@ namespace ShootingRange
             int i = count % 2 == 0 ? -count / 2 : -(int)(count / 2f - 0.5f);
             int max = i * -1;
 
-            Vector2 nor = (curTarget.position - Vector3.zero).normalized;
+            Vector2 nor = (curTarget.position - startPos).normalized;
             float tarZ = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
 
             float amount = central / count;
@@ -207,7 +220,7 @@ namespace ShootingRange
             for (; i <= max; i++)
             {
                 Quaternion rot = Quaternion.Euler(0, 0, z);
-                Instantiate(bullet, Vector3.zero, rot);
+                Instantiate(bullet, startPos, rot);
                 z += amount;
             }
         }
@@ -225,7 +238,7 @@ namespace ShootingRange
 
                 for (int i = 0; i < entireCount; i++)
                 {
-                    Vector2 nor = (curTarget.position - Vector3.zero).normalized;
+                    Vector2 nor = (curTarget.position - startPos).normalized;
                     float tarZ = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
 
                     z += amount;
@@ -254,7 +267,7 @@ namespace ShootingRange
                 for (; i <= max; i++)
                 {
                     Quaternion rot = Quaternion.Euler(0, 0, z + startRot);
-                    Instantiate(bullet, Vector3.zero, rot);
+                    Instantiate(bullet, startPos, rot);
                     z += amount;
                 }
             }
@@ -265,13 +278,104 @@ namespace ShootingRange
             float radius = 1f;
             for (int i = 0; i < 360; i += 360 / count)
             {
-                Vector3 pos = Vector3.zero + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
+                Vector3 pos = startPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius, 0);
 
-                Vector2 nor = (curTarget.position - Vector3.zero).normalized;
+                Vector2 nor = (curTarget.position - startPos).normalized;
                 float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
                 Quaternion rot = Quaternion.Euler(0, 0, z);
 
                 Instantiate(bullet, pos, rot);
+            }
+        }
+
+        void MovingRotatingCircleShot(int count, float moveSpd, float rotateSpd)
+        {
+            float radius = 1f;
+            for (int i = 0; i < 360; i += 360 / count)
+            {
+                Vector3 pos = startPos + new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius);
+                Vector2 nor = (curTarget.position - startPos).normalized;
+
+                GameObject temp = Instantiate(rotateBullet, pos, Quaternion.identity);
+                temp.GetComponent<RotateBullet>().InitBullet(startPos, nor, moveSpd, rotateSpd, i, radius);
+            }
+        }
+
+        void GatheringCircleShot(int count)
+        {
+            StartCoroutine(shotBullet());
+
+            IEnumerator shotBullet()
+            {
+                isDone = false;
+                float radius = 2f;
+                List<Bullet> bullets = new List<Bullet>();
+                for (int i = 0; i < 360; i += 360 / count)
+                {
+                    Vector3 pos = new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius);
+                    pos += curTarget.position;
+
+                    Vector2 nor = (curTarget.position - pos).normalized;
+                    float z = Mathf.Atan2(nor.y, nor.x) * Mathf.Rad2Deg;
+                    Quaternion rot = Quaternion.Euler(0, 0, z);
+
+                    var temp = Instantiate(bullet, pos, rot);
+                    var bt = temp.GetComponent<Bullet>();
+
+                    bt.isRun = false;
+                    bullets.Add(bt);
+
+                    yield return new WaitForSeconds(1f / count);
+                }
+
+                yield return new WaitForSeconds(1f);
+
+                foreach (var item in bullets)
+                {
+                    item.isRun = true;
+                }
+
+                isDone = true;
+                yield break;
+            }
+        }
+
+        void LinearTargetDelayShot(int count)
+        {
+            StartCoroutine(shotBullet());
+
+            IEnumerator shotBullet()
+            {
+                isDone = false;
+
+                List<Bullet> bullets = new List<Bullet>();
+
+                for (int i = 0; i < count; i++)
+                {
+                    Vector3 pos = startPos + new Vector3(-count / 2 + i, 0);
+
+                    var temp = Instantiate(bullet, pos, Quaternion.identity).GetComponent<Bullet>();
+                    temp.isRun = false;
+                    bullets.Add(temp);
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                yield return new WaitForSeconds(0.5f);
+
+                foreach (var item in bullets)
+                {
+                    var dir = (curTarget.position - item.transform.position);
+                    float z = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                    Quaternion rot = Quaternion.Euler(0, 0, z);
+                    
+                    item.transform.rotation = rot;
+                    item.isRun = true;
+
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                isDone = true;
+                yield break;
             }
         }
     }
