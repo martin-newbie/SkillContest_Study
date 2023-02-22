@@ -9,10 +9,14 @@ namespace Lerp
         public Transform model;
         public float moveSpeed = 5f;
 
+        float x, y;
+
         private void Update()
         {
-            float x = Input.GetAxisRaw("Horizontal");
-            float y = Input.GetAxisRaw("Vertical");
+            if (!Input.anyKey) return;
+
+            x = Input.GetAxisRaw("Horizontal");
+            y = Input.GetAxisRaw("Vertical");
 
             Vector3 nor = new Vector3(x, y, 0f).normalized;
             transform.Translate(nor * moveSpeed * Time.deltaTime);

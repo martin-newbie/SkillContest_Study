@@ -30,7 +30,7 @@ namespace ShootingRange
         {
             curTarget = targets[0];
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 13; i++)
             {
                 Button temp = Instantiate(shoot_buttonPrefab, shoot_parent);
 
@@ -98,6 +98,9 @@ namespace ShootingRange
                     break;
                 case 11:
                     LinearTargetDelayShot(10);
+                    break;
+                case 12:
+                    RandomCircular();
                     break;
                 default:
                     break;
@@ -376,6 +379,16 @@ namespace ShootingRange
 
                 isDone = true;
                 yield break;
+            }
+        }
+
+        void RandomCircular()
+        {
+            float radius = 1.5f;
+            for (int i = 0; i < 360; i += Random.Range(10, 30))
+            {
+                Vector3 pos = new Vector3(Mathf.Cos(i * Mathf.Deg2Rad) * radius, Mathf.Sin(i * Mathf.Deg2Rad) * radius);
+                Instantiate(bullet, pos, Quaternion.Euler(0, 0, i));
             }
         }
     }
